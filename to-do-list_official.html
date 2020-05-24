@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>JS todo list</h1>
+    <input type="text">
+    <button>submit</button>
+​
+    <ul>
+        <!-- <li>list 1</li> -->
+    </ul>
+​
+    <script>
+    (() => {
+        let uuid = 1 
+        const input = document.querySelector('input')
+        const btn = document.querySelector('button')
+        const list = document.querySelector('ul')
+​
+        const arr = []
+​
+        function updateUI() {
+            list.innerHTML = arr.map(el => {
+                return `<li data-id="${el.id}">${el.text} <a href="#">delete</a></li>`
+            }).join('')
+        }
+​
+        function createItemHandler(e, callback) {
+            const el = {
+                id: uuid++,
+                text: input.value
+            }
+            arr.push(el)
+            callback()
+            input.value = ''
+        }
+​
+        function deleteHandler(e, callback) {
+            e.preventDefault()
+            if (e.target.nodeName !== 'A') return
+            const id = e.target.parentNode.dataset.id
+            const elIdx = arr.findIndex(el => {
+                return el.id === parseInt(id)
+            })
+​
+            arr.splice(elIdx, 1)
+            callback()
+        }
+​
+        btn.addEventListener('click', (e) => {
+            createItemHandler(e, updateUI)
+        })
+        list.addEventListener('click', (e) => {
+            deleteHandler(e, updateUI)
+        })
+​
+    })()
+    </script>
+</body>
+</html>
